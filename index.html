@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prologis — Letter Spacing Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary-1: rgb(0, 194, 178);
+      --color-primary-3: rgb(24, 69, 67);
+      --color-primary-5: rgb(0, 56, 64);
+      --color-secondary-1: rgb(0, 220, 255);
+      --color-neutral-0: rgb(255, 255, 255);
+      --color-neutral-1: rgb(243, 244, 246);
+      --color-neutral-4: rgb(55, 65, 81);
+      --color-neutral-5: rgb(12, 17, 29);
+      --font: 'Inter', sans-serif;
+      --spacing-factor: 1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: rgb(240, 244, 244);
+      color: var(--color-neutral-5);
+    }
+
+    /* ── Control Panel ── */
+    .panel {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-primary-5);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 3px 16px rgba(0, 0, 0, 0.35);
+      flex-wrap: wrap;
+    }
+
+    .panel-logo {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-primary-1);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-right: 12px;
+      white-space: nowrap;
+    }
+
+    .panel-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 280px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.15);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--color-primary-1);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .badge {
+      background: rgba(0, 194, 178, 0.15);
+      border: 1px solid var(--color-primary-1);
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      color: var(--color-primary-1);
+      white-space: nowrap;
+      min-width: 90px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .snippet {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.55);
+      padding: 5px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: var(--font);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .reset-btn:hover {
+      border-color: var(--color-primary-1);
+      color: var(--color-primary-1);
+    }
+
+    /* ── Layout ── */
+    .content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 44px 48px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+
+    .card.dark {
+      background: var(--color-primary-5);
+    }
+
+    .card.teal {
+      background: var(--color-primary-3);
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-primary-1);
+      margin-bottom: 28px;
+    }
+    .card-tag::before {
+      content: '';
+      width: 18px;
+      height: 2px;
+      background: var(--color-primary-1);
+      border-radius: 1px;
+    }
+
+    /* ── Typography preview ── */
+    .preview-h1 {
+      font-family: var(--font);
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      margin-bottom: 8px;
+    }
+    .preview-h2 {
+      font-family: var(--font);
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      margin-bottom: 8px;
+    }
+    .preview-h3 {
+      font-family: var(--font);
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      margin-bottom: 8px;
+    }
+    .preview-h4 {
+      font-family: var(--font);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      margin-bottom: 6px;
+    }
+    .preview-h5 {
+      font-family: var(--font);
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      margin-bottom: 6px;
+    }
+    .preview-h6 {
+      font-family: var(--font);
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-neutral-5);
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+    }
+
+    .on-dark .preview-h1,
+    .on-dark .preview-h2,
+    .on-dark .preview-h3,
+    .on-dark .preview-h4,
+    .on-dark .preview-h5,
+    .on-dark .preview-h6 {
+      color: white;
+    }
+
+    .preview-p1 {
+      font-family: var(--font);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--color-neutral-4);
+      letter-spacing: calc(0.01em * var(--spacing-factor));
+      margin-bottom: 14px;
+    }
+    .preview-p2 {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--color-neutral-4);
+      letter-spacing: calc(0.01em * var(--spacing-factor));
+      margin-bottom: 14px;
+    }
+    .preview-p3 {
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--color-neutral-4);
+      letter-spacing: calc(0.01em * var(--spacing-factor));
+    }
+
+    .on-dark .preview-p1,
+    .on-dark .preview-p2,
+    .on-dark .preview-p3 {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .divider { height: 1px; background: rgba(0,194,178,0.2); margin: 24px 0; }
+
+    /* ── Buttons ── */
+    .btn-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 28px; }
+    .btn {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 1.1em 2em;
+      border: none;
+      cursor: pointer;
+      letter-spacing: calc(0.02em * var(--spacing-factor));
+      transition: background 0.2s;
+    }
+    .btn-primary {
+      background: var(--color-secondary-1);
+      color: var(--color-primary-5);
+      border: 3px solid var(--color-secondary-1);
+    }
+    .btn-primary:hover { background: rgb(154, 233, 252); border-color: rgb(154, 233, 252); }
+    .btn-outline-light {
+      background: none;
+      color: white;
+      border: 3px solid white;
+    }
+    .btn-outline-light:hover { border-color: rgba(255,255,255,0.5); }
+    .btn-outline-dark {
+      background: none;
+      color: var(--color-neutral-5);
+      border: 3px solid rgb(6, 115, 192);
+    }
+    .btn-outline-dark:hover { border-color: rgb(2, 91, 152); }
+  </style>
+</head>
+<body>
+
+<!-- ── Control Panel ── -->
+<div class="panel">
+  <span class="panel-logo">Prologis</span>
+  <span class="panel-label">Letter Spacing</span>
+  <input type="range" id="slider" min="0.5" max="5" step="0.25" value="1">
+  <div class="badge" id="emValue">0.020em</div>
+  <div class="snippet" id="factorSnippet">factor: 1×</div>
+  <button class="reset-btn" onclick="reset()">Reset Default</button>
+</div>
+
+<!-- ── Preview Content ── -->
+<div class="content">
+
+  <!-- Headings on light -->
+  <div class="card">
+    <div class="card-tag">Headings — Light Background</div>
+    <div class="preview-h1">Heading 1 — Prologis</div>
+    <div class="preview-h2">Heading 2 — Industrial Real Estate</div>
+    <div class="preview-h3">Heading 3 — Global Logistics Solutions</div>
+    <div class="preview-h4">Heading 4 — Supply Chain Excellence</div>
+    <div class="preview-h5">Heading 5 — Strategic Locations Worldwide</div>
+    <div class="preview-h6">Heading 6 — Connecting Markets Efficiently</div>
+  </div>
+
+  <!-- Body text -->
+  <div class="card">
+    <div class="card-tag">Body Text</div>
+    <p class="preview-p1">Prologis is the global leader in logistics real estate, with a focus on high-barrier, high-growth markets. As of December 2023, the company owned or had investments in properties and development projects totaling approximately 1.2 billion square feet in 19 countries.</p>
+    <div class="divider"></div>
+    <p class="preview-p2">We own and operate the largest logistics real estate portfolio in the world. Our customers range from global 2PLs to small businesses. Our locations, access to capital, and depth of knowledge enable us to respond to our customers' needs — both today and in the future.</p>
+    <div class="divider"></div>
+    <p class="preview-p3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+  </div>
+
+  <!-- Dark background -->
+  <div class="card dark on-dark">
+    <div class="card-tag">Headings &amp; Body — Dark Background</div>
+    <div class="preview-h2">Building the Infrastructure of the Future</div>
+    <div class="preview-h4">Sustainability Meets Scale</div>
+    <p class="preview-p1">Our customer-first approach means we listen, adapt, and deliver solutions that keep your operations moving forward. From leasing to development, we are here every step of the way.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary">Get Started</button>
+      <button class="btn btn-outline-light">Learn More</button>
+    </div>
+  </div>
+
+  <!-- Teal background -->
+  <div class="card teal on-dark">
+    <div class="card-tag">Headings &amp; Body — Brand Teal Background</div>
+    <div class="preview-h2">Discover What's Possible</div>
+    <div class="preview-h5">Innovation at Every Step of the Journey</div>
+    <p class="preview-p2">We leverage cutting-edge technology and deep market expertise to provide properties that are not just buildings — but strategic assets for your business growth and long-term success.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary">Explore Locations</button>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="card">
+    <div class="card-tag">Buttons</div>
+    <div class="btn-row">
+      <button class="btn btn-primary">Primary Button</button>
+      <button class="btn btn-outline-dark">Tertiary Button</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const slider  = document.getElementById('slider');
+  const emBadge = document.getElementById('emValue');
+  const factorEl = document.getElementById('factorSnippet');
+  const DEFAULT = 1;
+
+  function update() {
+    const factor = parseFloat(slider.value);
+    document.documentElement.style.setProperty('--spacing-factor', factor);
+
+    const headingEm = (0.02 * factor).toFixed(3);
+    const bodyEm    = (0.01 * factor).toFixed(3);
+
+    emBadge.textContent = headingEm + 'em';
+    factorEl.textContent = 'factor: ' + factor + '\u00d7';
+  }
+
+  function reset() {
+    slider.value = DEFAULT;
+    update();
+  }
+
+  slider.addEventListener('input', update);
+  update();
+</script>
+</body>
+</html>
